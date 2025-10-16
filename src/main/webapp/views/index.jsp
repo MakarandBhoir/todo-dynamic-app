@@ -21,13 +21,51 @@
                     </div>
                 </form>
                 <ul class="list-group">
-                    <c:forEach var="todo" items="${todos}">
-                        <li class="list-group-item">${todo}</li>
+                    <c:forEach var="todo" items="${todos}" varStatus="status">
+                        <li class="list-group-item d-flex align-items-center justify-content-between">
+                            <span>${todo}</span>
+                            <div class="btn-group" role="group">
+                                <!-- Edit Form -->
+                                <form method="post" action="${pageContext.request.contextPath}/todos" class="d-inline">
+                                    <input type="hidden" name="action" value="edit" />
+                                    <input type="hidden" name="index" value="${status.index}" />
+                                    <input type="text" name="editTodo" value="${todo}"
+                                        class="form-control d-inline-block" style="width: 120px; display: none;" />
+                                    <button type="button" class="btn btn-warning btn-sm edit-btn">Edit</button>
+                                    <button type="submit" class="btn btn-success btn-sm save-btn"
+                                        style="display: none;">Save</button>
+                                </form>
+                                <!-- Delete Form -->
+                                <form method="post" action="${pageContext.request.contextPath}/todos"
+                                    class="d-inline ms-1">
+                                    <input type="hidden" name="action" value="delete" />
+                                    <input type="hidden" name="index" value="${status.index}" />
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </div>
+                        </li>
                     </c:forEach>
                 </ul>
             </div>
             <script src="${pageContext.request.contextPath}/assets/js/bootstrap.bundle.min.js"></script>
-            <script src="${pageContext.request.contextPath}/assets/js/custom.js"></script>
+            <script>
+                // Toggle edit mode for todo items
+                document.addEventListener('DOMContentLoaded', function () {
+                    document.querySelectorAll('.edit-btn').forEach(function (btn) {
+                        btn.addEventListener('click', function () {
+                            const form = btn.closest('form');
+                            const input = form.querySelector('input[name="editTodo"]');
+                            const saveBtn = form.querySelector('.save-btn');
+                            if (input.style.display === 'none') {
+                                input.style.display = 'inline-block';
+                                saveBtn.style.display = 'inline-block';
+                                btn.style.display = 'none';
+                                input.focus();
+                            }
+                        });
+                    });
+                });
+            </script>
         </body>
 
         </html>
